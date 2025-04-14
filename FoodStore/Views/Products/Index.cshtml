@@ -1,0 +1,28 @@
+﻿@model IEnumerable<Product>
+
+<div class="container mt-5">
+    <h1 class="mb-4">🏋️ Нашите продукти</h1>
+
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        @foreach (var product in Model)
+        {
+            <div class="col">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">@product.Name</h5>
+                        <span class="badge bg-secondary">@product.Category?.Name</span>
+                        <p class="card-text mt-2 text-success fw-bold">@product.Price.ToString("C")</p>
+                    </div>
+                    <div class="card-footer bg-white">
+                        <form asp-controller="CartItems" asp-action="AddToCart" method="post">
+                            <input type="hidden" name="productId" value="@product.Id" />
+                            <button type="submit" class="btn btn-primary w-100">
+                                Добави в количка
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

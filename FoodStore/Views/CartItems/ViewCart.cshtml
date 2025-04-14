@@ -1,0 +1,31 @@
+﻿@model List<CartViewModel>
+
+<div class="container mt-5">
+    <h2 class="mb-4">🛒 Вашата количка</h2>
+
+    <table class="table table-hover">
+        <thead class="table-dark">
+            <tr>
+                <th>Продукт</th>
+                <th>Цена</th>
+                <th>Количество</th>
+                <th>Общо</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Product.Name</td>
+                    <td>@item.Product.Price.ToString("C")</td>
+                    <td>@item.Quantity</td>
+                    <td>@((item.Product.Price * item.Quantity).ToString("C"))</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <a asp-controller="Products" asp-action="Index" class="btn btn-outline-primary">
+        ← Продължи пазаруването
+    </a>
+</div>
