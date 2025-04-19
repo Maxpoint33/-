@@ -1,0 +1,19 @@
+﻿@{
+    ViewData["Title"] = "Admin Dashboard";
+}
+
+<h2>Welcome, Admin 👑</h2>
+
+<p class="lead">Manage products, categories, and users from here.</p>
+
+<div class="row">
+    <div class="col-md-4">
+        <a class="btn btn-primary w-100" asp-controller="Products" asp-action="Create">➕ Add Product</a>
+    </div>
+    <div class="col-md-4">
+        <a class="btn btn-secondary w-100" asp-controller="Categories" asp-action="Index">📂 Manage Categories</a>
+    </div>
+    <div class="col-md-4">
+        <a class="btn btn-warning w-100" asp-controller="Users" asp-action="Index">👥 Manage Users</a>
+    </div>
+</div>
