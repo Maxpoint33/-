@@ -1,0 +1,25 @@
+﻿@model IEnumerable<Microsoft.AspNetCore.Identity.IdentityUser>
+
+@{
+    ViewData["Title"] = "Manage Users";
+}
+
+<h2>👥 Registered Users</h2>
+
+<table class="table table-bordered">
+    <thead class="table-dark">
+        <tr>
+            <th>Email</th>
+            <th>User ID</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model)
+        {
+            <tr>
+                <td>@user.Email</td>
+                <td>@user.Id</td>
+            </tr>
+        }
+    </tbody>
+</table>

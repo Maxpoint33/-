@@ -1,32 +1,37 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using NutritionStore.Data;
 using NutritionStore.Models;
 using System.Diagnostics;
 
-namespace NutritionStore.Controllers
+public class HomeController : Controller
 {
-    public class HomeController : Controller
+    private readonly ILogger<HomeController> _logger;
+    private readonly ApplicationDbContext _context;
+
+    public HomeController(ILogger<HomeController> logger, ApplicationDbContext context)
     {
-        private readonly ILogger<HomeController> _logger;
+        _logger = logger;
+        _context = context;
+    }
 
-        public HomeController(ILogger<HomeController> logger)
-        {
-            _logger = logger;
-        }
+    public async Task<IActionResult> Index()
+    {
+        var products = await _context.Products
+            .Include(p => p.Category)
+            .ToListAsync();
 
-        public IActionResult Index()
-        {
-            return View();
-        }
+        return View(products);
+    }
 
-        public IActionResult Privacy()
-        {
-            return View();
-        }
+    public IActionResult Privacy()
+    {
+        return View();
+    }
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }
+    [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+    public IActionResult Error()
+    {
+        return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
     }
 }

@@ -1,0 +1,30 @@
+﻿@model IEnumerable<Category>
+
+@{
+    ViewData["Title"] = "Категории";
+}
+
+<h2>Категории</h2>
+
+<a asp-action="Create" class="btn btn-success mb-3">Добави категория</a>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Име</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var cat in Model)
+        {
+            <tr>
+                <td>@cat.Name</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@cat.Id" class="btn btn-warning btn-sm">Edit</a>
+                    <a asp-action="Delete" asp-route-id="@cat.Id" class="btn btn-danger btn-sm">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,0 +1,67 @@
+﻿@model IEnumerable<CartItem>
+@{
+    ViewData["Title"] = "Your Cart";
+    var products = (List<Product>)ViewBag.Products;
+    decimal grandTotal = 0;
+}
+
+<h2 class="text-center mb-4">🛒 Your Shopping Cart</h2>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info text-center">
+        Your cart is empty. <a asp-controller="Home" asp-action="Index">Start shopping</a>
+    </div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th scope="col">Product</th>
+                    <th scope="col" class="text-center">Price</th>
+                    <th scope="col" class="text-center">Quantity</th>
+                    <th scope="col" class="text-center">Total</th>
+                    <th scope="col" class="text-center">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    var product = products.FirstOrDefault(p => p.Id == item.ProductId);
+                    var total = (product?.Price ?? 0) * item.Quantity;
+                    grandTotal += total;
+
+                    <tr>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <img src="@product?.ImageUrl" alt="@product?.Name" class="img-thumbnail me-3" style="width: 80px; height: 80px; object-fit: cover;" />
+                                <div>
+                                    <h5 class="mb-0">@product?.Name</h5>
+                                    <small class="text-muted">@product?.Category.Name</small>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="text-center">@product?.Price.ToString("C")</td>
+                        <td class="text-center">
+                            <input type="number" value="@item.Quantity" min="1" class="form-control text-center" style="width: 60px; margin: auto;" />
+                        </td>
+                        <td class="text-center">@total.ToString("C")</td>
+                        <td class="text-center">
+                            <button class="btn btn-outline-danger btn-sm">Remove</button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center mt-4">
+        <a asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary">← Continue Shopping</a>
+        <div>
+            <h4 class="mb-0">Total: <span class="text-success">@grandTotal.ToString("C")</span></h4>
+            <a href="#" class="btn btn-success btn-lg mt-2">Proceed to Checkout</a>
+        </div>
+    </div>
+}
