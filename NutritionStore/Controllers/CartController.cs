@@ -15,8 +15,22 @@ public class CartController : Controller
 
         ViewBag.Products = new List<Product>
         {
-            new Product { Id = 1, Name = "Whey Protein", Price = 49.99m, ImageUrl = "/images/whey.jpg" },
-            new Product { Id = 2, Name = "Creatine", Price = 24.99m, ImageUrl = "/images/creatine.jpg" }
+            new Product
+            {
+                Id = 1,
+                Name = "Whey Protein",
+                Price = 49.99m,
+                ImageUrl = "/images/whey.jpg",
+                Category = new Category { Name = "Protein" }
+            },
+            new Product
+            {
+                Id = 2,
+                Name = "Creatine",
+                Price = 24.99m,
+                ImageUrl = "/images/creatine.jpg",
+                Category = new Category { Name = "Strength" }
+            }
         };
 
         return View(mockCart);

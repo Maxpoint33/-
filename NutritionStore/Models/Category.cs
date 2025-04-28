@@ -1,12 +1,18 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
-public class Category
+namespace NutritionStore.Models
 {
-    public int Id { get; set; }
+    public class Category
+    {
+        [Key]
+        public int Id { get; set; }
 
-    [Required]
-    [MaxLength(50)]
-    public string Name { get; set; } = null!;
+        [Required(ErrorMessage = "Category Name is required.")]
+        [MaxLength(50, ErrorMessage = "Category Name cannot exceed 50 characters.")]
+        public string Name { get; set; } = null!;
 
-    public ICollection<Product> Products { get; set; } = new List<Product>();
+      
+        public ICollection<Product> Products { get; set; } = new List<Product>();
+    }
 }

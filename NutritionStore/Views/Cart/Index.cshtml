@@ -20,7 +20,7 @@ else
             <thead class="table-light">
                 <tr>
                     <th scope="col">Product</th>
-                    <th scope="col" class="text-center">Price</th>
+                    <th scope="col" class="text-center">Price (Each)</th>
                     <th scope="col" class="text-center">Quantity</th>
                     <th scope="col" class="text-center">Total</th>
                     <th scope="col" class="text-center">Actions</th>
@@ -39,11 +39,11 @@ else
                                 <img src="@product?.ImageUrl" alt="@product?.Name" class="img-thumbnail me-3" style="width: 80px; height: 80px; object-fit: cover;" />
                                 <div>
                                     <h5 class="mb-0">@product?.Name</h5>
-                                    <small class="text-muted">@product?.Category.Name</small>
+                                    <small class="text-muted">@product?.Category?.Name ?? "No category"</small>
                                 </div>
                             </div>
                         </td>
-                        <td class="text-center">@product?.Price.ToString("C")</td>
+                        <td class="text-center">@($"{product?.Price:C} x {item.Quantity}")</td>
                         <td class="text-center">
                             <input type="number" value="@item.Quantity" min="1" class="form-control text-center" style="width: 60px; margin: auto;" />
                         </td>
