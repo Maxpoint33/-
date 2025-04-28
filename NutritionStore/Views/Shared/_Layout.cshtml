@@ -21,11 +21,11 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 </head>
 
-<body>
+<body class="bg-dark text-white">
     <header>
-        <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-black shadow-sm">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">NutritionStore</a>
+                <a class="navbar-brand fw-bold" asp-area="" asp-controller="Home" asp-action="Index">NutritionStore</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                     <span class="navbar-toggler-icon"></span>
                 </button>
@@ -58,13 +58,13 @@
         </nav>
     </header>
 
-    <div class="container py-4">
+    <div class="container-fluid py-4">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
     </div>
 
-    <footer class="footer bg-dark text-white text-center py-3 mt-auto">
+    <footer class="footer bg-black text-white text-center py-3 mt-auto">
         <div class="container">
             &copy; 2025 - NutritionStore
         </div>

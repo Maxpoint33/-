@@ -2,18 +2,128 @@
     ViewData["Title"] = "Admin Dashboard";
 }
 
-<h2>Welcome, Admin 👑</h2>
+<div class="container py-5">
+    <h1 class="text-center mb-5 animate__animated animate__fadeInDown">Welcome, Admin 👑</h1>
 
-<p class="lead">Manage products, categories, and users from here.</p>
+    <!-- Metrics Cards -->
+    <div class="row g-4">
+        <div class="col-md-3">
+            <div class="card bg-dark border-primary text-primary shadow animate__animated animate__fadeInUp text-center p-3">
+                <i class="bi bi-box-seam display-4 mb-2"></i>
+                <h5>Total Products</h5>
+                <h2 id="productsCount" class="fw-bold">0</h2>
+            </div>
+        </div>
 
-<div class="row">
-    <div class="col-md-4">
-        <a class="btn btn-primary w-100" asp-controller="Products" asp-action="Create">➕ Add Product</a>
+        <div class="col-md-3">
+            <div class="card bg-dark border-success text-success shadow animate__animated animate__fadeInUp text-center p-3">
+                <i class="bi bi-cart-check display-4 mb-2"></i>
+                <h5>Total Orders</h5>
+                <h2 id="ordersCount" class="fw-bold">0</h2>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card bg-dark border-warning text-warning shadow animate__animated animate__fadeInUp text-center p-3">
+                <i class="bi bi-people-fill display-4 mb-2"></i>
+                <h5>Total Users</h5>
+                <h2 id="usersCount" class="fw-bold">0</h2>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card bg-dark border-danger text-danger shadow animate__animated animate__fadeInUp text-center p-3">
+                <i class="bi bi-currency-dollar display-4 mb-2"></i>
+                <h5>Earnings</h5>
+                <h2 id="earningsCount" class="fw-bold">$0</h2>
+            </div>
+        </div>
     </div>
-    <div class="col-md-4">
-        <a class="btn btn-secondary w-100" asp-controller="Categories" asp-action="Index">📂 Manage Categories</a>
+
+    <!-- Chart -->
+    <div class="row mt-5">
+        <div class="col-md-12">
+            <div class="card bg-dark text-white shadow p-4">
+                <h4 class="text-center mb-4">Sales Overview 📈</h4>
+                <canvas id="salesChart" height="100"></canvas>
+            </div>
+        </div>
     </div>
-    <div class="col-md-4">
-        <a class="btn btn-warning w-100" asp-controller="Users" asp-action="Index">👥 Manage Users</a>
+
+    <!-- Management Buttons -->
+    <div class="row mt-5 g-3">
+        <div class="col-md-3">
+            <a class="btn btn-warning w-100" asp-controller="Products" asp-action="Create">➕ Add New Product</a>
+        </div>
+        <div class="col-md-3">
+            <a class="btn btn-info w-100" asp-controller="Categories" asp-action="Index">📂 Manage Categories</a>
+        </div>
+        <div class="col-md-3">
+            <a class="btn btn-success w-100" asp-controller="Orders" asp-action="Index">📦 View Orders</a>
+        </div>
+        <div class="col-md-3">
+            <a class="btn btn-primary w-100" asp-controller="Users" asp-action="Index">👥 View Users</a>
+        </div>
     </div>
 </div>
+
+@section Scripts {
+    <!-- Count Animation -->
+    <script>
+        function animateCounter(id, target) {
+            let count = 0;
+            const interval = setInterval(function () {
+                if (count >= target) {
+                    clearInterval(interval);
+                } else {
+                    count++;
+                    document.getElementById(id).innerText = count;
+                }
+            }, 30);
+        }
+
+        animateCounter("productsCount", 25);
+        animateCounter("ordersCount", 12);
+        animateCounter("usersCount", 50);
+        animateCounter("earningsCount", 15000);
+    </script>
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const ctx = document.getElementById('salesChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['January', 'February', 'March', 'April', 'May', 'June'],
+                datasets: [{
+                    label: 'Sales',
+                    data: [500, 700, 800, 600, 900, 1200],
+                    backgroundColor: 'rgba(13, 110, 253, 0.2)',
+                    borderColor: 'rgba(13, 110, 253, 1)',
+                    borderWidth: 2,
+                    tension: 0.4,
+                    fill: true,
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        ticks: { color: '#ffffff' },
+                        grid: { color: 'rgba(255,255,255,0.1)' }
+                    },
+                    x: {
+                        ticks: { color: '#ffffff' },
+                        grid: { color: 'rgba(255,255,255,0.1)' }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        labels: { color: '#ffffff' }
+                    }
+                }
+            }
+        });
+    </script>
+}
