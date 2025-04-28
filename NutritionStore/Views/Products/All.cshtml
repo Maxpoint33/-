@@ -1,4 +1,8 @@
-﻿@model IEnumerable<Product>
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+
+@model IEnumerable<Product>
 
 @{
     ViewData["Title"] = "Products";
@@ -18,7 +22,22 @@
                     <p class="card-text">@product.Description</p>
                     <div class="mt-auto">
                         <p class="text-success fw-bold">@product.Price.ToString("C")</p>
-                        <a asp-controller="Products" asp-action="Details" asp-route-id="@product.Id" class="btn btn-outline-primary w-100">View Details</a>
+
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <div class="d-flex gap-2 mb-2">
+                                <a asp-action="Edit" asp-route-id="@product.Id" class="btn btn-warning w-50">
+                                    Edit ✏️
+                                </a>
+                                <form asp-action="Delete" asp-route-id="@product.Id" method="post" class="w-50">
+                                    <button type="submit" class="btn btn-danger w-100">Delete 🗑️</button>
+                                </form>
+                            </div>
+                        }
+
+                        <a asp-controller="Products" asp-action="Details" asp-route-id="@product.Id" class="btn btn-outline-primary w-100">
+                            View Details
+                        </a>
                     </div>
                 </div>
             </div>
