@@ -4,24 +4,72 @@
     ViewData["Title"] = "Home";
 }
 
-<div class="text-center mb-5">
-    <h1 class="display-4 fw-bold">Welcome to NutritionStore</h1>
-    <p class="lead text-muted">Shop top-quality supplements, vitamins, and more to fuel your fitness goals 💪</p>
-</div>
+<!-- Hero Section -->
+<section style="background: url('https://images.unsplash.com/photo-1605296867304-46d5465a13f1?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80') no-repeat center center/cover; height: 90vh; position: relative;">
+    <div style="background-color: rgba(0, 0, 0, 0.7); position: absolute; inset: 0;"></div>
+    <div class="d-flex flex-column justify-content-center align-items-center text-white text-center position-relative h-100 animate__animated animate__fadeIn">
+        <h1 class="display-3 fw-bold">Welcome to <span class="text-warning">NutritionStore</span> 🏋️‍♂️</h1>
+        <p class="lead text-white-50 mb-4">Fuel your fitness journey with premium supplements and gear!</p>
+        <a class="btn btn-warning btn-lg" asp-controller="Products" asp-action="All">
+            <i class="bi bi-cart-fill"></i> Start Shopping
+        </a>
+    </div>
+</section>
 
-<div class="row row-cols-1 row-cols-md-3 g-4">
-    @foreach (var product in Model)
-    {
-        <div class="col">
-            <div class="card h-100 shadow-sm">
-                <img src="@product.ImageUrl" class="card-img-top" alt="@product.Name" style="height: 250px; object-fit: cover;">
-                <div class="card-body">
-                    <h5 class="card-title">@product.Name</h5>
-                    <p class="card-text text-muted">@product.Category.Name</p>
-                    <p class="fw-bold text-success">@product.Price.ToString("C")</p>
-                    <a asp-controller="Products" asp-action="Details" asp-route-id="@product.Id" class="btn btn-outline-primary w-100">View Details</a>
+<!-- Featured Products Section -->
+<section style="background: #121212; padding: 60px 0;">
+    <div class="container">
+        <h2 class="text-center mb-5 fw-bold text-white animate__animated animate__fadeInDown">Featured Products</h2>
+
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+            @foreach (var product in Model.Take(6))
+            {
+                <div class="col animate__animated animate__fadeInUp">
+                    <div class="card h-100 shadow-sm" style="background-color: #1f1f1f; color: #f8f9fa;">
+                        <img src="@product.ImageUrl" class="card-img-top" alt="@product.Name" style="height: 250px; object-fit: cover;">
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title">@product.Name</h5>
+                            <p class="card-text text-muted">@product.Category?.Name</p>
+                            <p class="fw-bold text-success">@product.Price.ToString("C")</p>
+                            <a asp-controller="Products" asp-action="Details" asp-route-id="@product.Id" class="btn btn-outline-warning mt-auto w-100">
+                                View Details
+                            </a>
+                        </div>
+                    </div>
                 </div>
-            </div>
+            }
         </div>
-    }
-</div>
+    </div>
+</section>
+
+<!-- New Arrivals Section -->
+<section style="background: #181818; padding: 80px 0;">
+    <div class="container">
+        <h2 class="text-center mb-5 fw-bold text-white animate__animated animate__fadeInDown">New Arrivals 🚀</h2>
+
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+            @foreach (var product in Model.Skip(6))
+            {
+                <div class="col animate__animated animate__fadeInUp">
+                    <div class="card h-100 shadow-sm" style="background-color: #1f1f1f; color: #f8f9fa;">
+                        <img src="@product.ImageUrl" class="card-img-top" alt="@product.Name" style="height: 250px; object-fit: cover;">
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title">@product.Name</h5>
+                            <p class="card-text text-muted">@product.Category?.Name</p>
+                            <p class="fw-bold text-success">@product.Price.ToString("C")</p>
+                            <a asp-controller="Products" asp-action="Details" asp-route-id="@product.Id" class="btn btn-outline-success mt-auto w-100">
+                                View Details
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <div class="text-center mt-5">
+            <a class="btn btn-success btn-lg animate__animated animate__pulse animate__infinite" asp-controller="Products" asp-action="All">
+                Browse All Products 🛒
+            </a>
+        </div>
+    </div>
+</section>

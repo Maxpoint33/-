@@ -1,4 +1,5 @@
 ﻿@model IEnumerable<CartItem>
+
 @{
     ViewData["Title"] = "Your Cart";
     var products = (List<Product>)ViewBag.Products;
@@ -10,7 +11,7 @@
 @if (!Model.Any())
 {
     <div class="alert alert-info text-center">
-        Your cart is empty. <a asp-controller="Home" asp-action="Index">Start shopping</a>
+        Your cart is empty. <a asp-controller="Products" asp-action="All">Start shopping</a>
     </div>
 }
 else
@@ -20,7 +21,7 @@ else
             <thead class="table-light">
                 <tr>
                     <th scope="col">Product</th>
-                    <th scope="col" class="text-center">Price (Each)</th>
+                    <th scope="col" class="text-center">Price</th>
                     <th scope="col" class="text-center">Quantity</th>
                     <th scope="col" class="text-center">Total</th>
                     <th scope="col" class="text-center">Actions</th>
@@ -43,13 +44,14 @@ else
                                 </div>
                             </div>
                         </td>
-                        <td class="text-center">@($"{product?.Price:C} x {item.Quantity}")</td>
-                        <td class="text-center">
-                            <input type="number" value="@item.Quantity" min="1" class="form-control text-center" style="width: 60px; margin: auto;" />
-                        </td>
+                        <td class="text-center">@($"{product?.Price:C}")</td>
+                        <td class="text-center">@item.Quantity</td>
                         <td class="text-center">@total.ToString("C")</td>
                         <td class="text-center">
-                            <button class="btn btn-outline-danger btn-sm">Remove</button>
+                            <form asp-controller="Cart" asp-action="Remove" method="post" class="d-inline">
+                                <input type="hidden" name="id" value="@item.Id" />
+                                <button type="submit" class="btn btn-outline-danger btn-sm">Remove</button>
+                            </form>
                         </td>
                     </tr>
                 }
@@ -58,7 +60,7 @@ else
     </div>
 
     <div class="d-flex justify-content-between align-items-center mt-4">
-        <a asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary">← Continue Shopping</a>
+        <a asp-controller="Products" asp-action="All" class="btn btn-outline-secondary">← Continue Shopping</a>
         <div>
             <h4 class="mb-0">Total: <span class="text-success">@grandTotal.ToString("C")</span></h4>
             <a href="#" class="btn btn-success btn-lg mt-2">Proceed to Checkout</a>

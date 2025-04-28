@@ -20,6 +20,22 @@ public class ProductsController : Controller
         return View(products);
     }
 
+    // ✅ View Details
+    [AllowAnonymous]
+    public async Task<IActionResult> Details(int id)
+    {
+        var product = await _context.Products
+            .Include(p => p.Category)
+            .FirstOrDefaultAsync(p => p.Id == id);
+
+        if (product == null)
+        {
+            return NotFound();
+        }
+
+        return View(product);
+    }
+
     // ✅ Only Admins can create
     [Authorize(Roles = "Admin")]
     [HttpGet]

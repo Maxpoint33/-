@@ -1,0 +1,31 @@
+﻿@model Product
+
+@{
+    ViewData["Title"] = "Product Details";
+}
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-6">
+            <img src="@Model.ImageUrl" alt="@Model.Name" class="img-fluid rounded shadow-sm" style="max-height: 500px; object-fit: cover;" />
+        </div>
+        <div class="col-md-6">
+            <h2>@Model.Name</h2>
+            <p class="text-muted">@Model.Category?.Name</p>
+            <h4 class="text-success">@Model.Price.ToString("C")</h4>
+
+            <p class="mt-4">@Model.Description</p>
+
+            <form asp-controller="Cart" asp-action="Add" method="post" class="mt-4">
+                <input type="hidden" name="productId" value="@Model.Id" />
+                <div class="d-flex align-items-center mb-3">
+                    <label for="quantity" class="me-2">Quantity:</label>
+                    <input type="number" id="quantity" name="quantity" value="1" min="1" class="form-control" style="width: 80px;" />
+                </div>
+                <button type="submit" class="btn btn-primary btn-lg w-100">🛒 Add to Cart</button>
+            </form>
+
+            <a asp-controller="Products" asp-action="All" class="btn btn-outline-secondary mt-3 w-100">← Back to Products</a>
+        </div>
+    </div>
+</div>
