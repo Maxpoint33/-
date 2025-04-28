@@ -8,39 +8,93 @@
     ViewData["Title"] = "Products";
 }
 
-<h2 class="mb-4 text-center">All Products</h2>
+<h2 class="mb-4 text-center fw-bold animate__animated animate__fadeInDown text-white">All Products 🛒</h2>
 
-<div class="row row-cols-1 row-cols-md-4 g-4">
-    @foreach (var product in Model)
-    {
-        <div class="col">
-            <div class="card h-100 shadow-sm border-0">
-                <img src="@product.ImageUrl" class="card-img-top" alt="@product.Name" style="object-fit: cover; height: 200px;" />
-                <div class="card-body d-flex flex-column">
-                    <h5 class="card-title">@product.Name</h5>
-                    <p class="card-text text-muted">@product.Category?.Name</p>
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success text-center animate__animated animate__fadeIn">
+        @TempData["SuccessMessage"]
+    </div>
+}
 
-                    <div class="mt-auto">
-                        <p class="text-success fw-bold">@product.Price.ToString("C")</p>
+<!-- Filters -->
+<div class="card bg-dark mb-5 p-4 animate__animated animate__fadeIn">
+    <form method="get" class="row g-3 text-white">
+        <div class="col-md-4">
+            <input type="text" name="searchTerm" class="form-control bg-dark text-white" placeholder="🔍 Search products..." />
+        </div>
+        <div class="col-md-3">
+            <select name="category" class="form-select bg-dark text-white">
+                <option value="">-- Select Category --</option>
+                @foreach (var cat in ViewBag.Categories)
+                {
+                    <option value="@cat.Name">@cat.Name</option>
+                }
+            </select>
+        </div>
+        <div class="col-md-3">
+            <select name="sort" class="form-select bg-dark text-white">
+                <option value="">-- Sort By --</option>
+                <option value="priceAsc">Price: Low to High</option>
+                <option value="priceDesc">Price: High to Low</option>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <button type="submit" class="btn btn-success w-100">Apply 🔎</button>
+        </div>
+    </form>
+</div>
 
-                        @if (User.IsInRole("Admin"))
-                        {
-                            <div class="d-flex gap-2 mb-2">
-                                <a asp-action="Edit" asp-route-id="@product.Id" class="btn btn-warning w-50">
-                                    Edit ✏️
-                                </a>
-                                <form asp-action="Delete" asp-route-id="@product.Id" method="post" class="w-50">
-                                    <button type="submit" class="btn btn-danger w-100">Delete 🗑️</button>
-                                </form>
-                            </div>
-                        }
+<!-- Product Cards -->
+@if (Model.Any())
+{
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        @foreach (var product in Model)
+        {
+            <div class="col animate__animated animate__fadeInUp">
+                <div class="card h-100 bg-dark text-white shadow-sm">
+                    <img src="@product.ImageUrl" class="card-img-top" alt="@product.Name" style="height: 250px; object-fit: cover;">
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">@product.Name</h5>
+                        <p class="card-text text-muted">@product.Category?.Name</p>
+                        <div class="mt-auto">
+                            <p class="text-success fw-bold">@product.Price.ToString("C")</p>
 
-                        <a asp-controller="Products" asp-action="Details" asp-route-id="@product.Id" class="btn btn-outline-primary w-100">
-                            View Details
-                        </a>
+                            <form asp-action="AddToCart" method="post" class="d-grid mb-2">
+                                <input type="hidden" name="productId" value="@product.Id" />
+                                <button type="submit" class="btn btn-success w-100">➕ Add to Cart</button>
+                            </form>
+
+                            <a asp-controller="Products" asp-action="Details" asp-route-id="@product.Id" class="btn btn-outline-light w-100">
+                                View Details
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    }
-</div>
+        }
+    </div>
+}
+else
+{
+    <div class="text-center text-muted mt-5">
+        <h4>No products found matching your search! 😔</h4>
+    </div>
+}
+
+<!-- Pagination -->
+@if (ViewBag.TotalPages > 1)
+{
+    <nav class="mt-5">
+        <ul class="pagination justify-content-center">
+            @for (int i = 1; i <= (int)ViewBag.TotalPages; i++)
+            {
+                <li class="page-item @(i == (int)ViewBag.CurrentPage ? "active" : "")">
+                    <a class="page-link bg-dark text-white border-secondary" href="@Url.Action("All", new { page = i })">
+                        @i
+                    </a>
+                </li>
+            }
+        </ul>
+    </nav>
+}
