@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using NutritionStore.Data;
 using NutritionStore.Models;
+using NutritionStore.ViewModels;
 
 public class ProductsController : Controller
 {
@@ -93,14 +94,25 @@ public class ProductsController : Controller
     [AllowAnonymous]
     public async Task<IActionResult> Details(int id)
     {
-        var product = await _context.Products
-            .Include(p => p.Category)
-            .FirstOrDefaultAsync(p => p.Id == id);
+        var product = await _context.Products.Include(p => p.Category).FirstOrDefaultAsync(p => p.Id == id);
+        if (product == null) return NotFound();
 
-        if (product == null)
-            return NotFound();
+        var reviews = await _context.Reviews
+            .Where(r => r.ProductId == id)
+            .OrderByDescending(r => r.CreatedAt)
+            .ToListAsync();
 
-        return View(product);
+        var avgRating = reviews.Any() ? reviews.Average(r => r.Rating) : 0;
+
+        var viewModel = new ProductDetailsViewModel
+        {
+            Product = product,
+            Reviews = reviews,
+            AverageRating = avgRating,
+            ReviewForm = new ReviewFormModel { ProductId = id }
+        };
+
+        return View(viewModel);
     }
 
     // ✏️ Create Product (Admin Only)

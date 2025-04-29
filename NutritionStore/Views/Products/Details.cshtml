@@ -1,4 +1,4 @@
-﻿@model Product
+﻿@model NutritionStore.ViewModels.ProductDetailsViewModel
 
 @{
     ViewData["Title"] = "Product Details";
@@ -7,17 +7,22 @@
 <div class="container mt-5">
     <div class="row">
         <div class="col-md-6">
-            <img src="@Model.ImageUrl" alt="@Model.Name" class="img-fluid rounded shadow-sm" style="max-height: 500px; object-fit: cover;" />
+            <img src="@Model.Product.ImageUrl" alt="@Model.Product.Name" class="img-fluid rounded shadow-sm" style="max-height: 500px; object-fit: cover;" />
         </div>
         <div class="col-md-6">
-            <h2>@Model.Name</h2>
-            <p class="text-muted">@Model.Category?.Name</p>
-            <h4 class="text-success">@Model.Price.ToString("C")</h4>
+            <h2>@Model.Product.Name</h2>
+            <p class="text-muted">@Model.Product.Category?.Name</p>
+            <h4 class="text-success">@Model.Product.Price.ToString("C")</h4>
 
-            <p class="mt-4">@Model.Description</p>
+            @if (Model.AverageRating > 0)
+            {
+                <p class="mb-1">⭐ <strong>@Model.AverageRating.ToString("0.0")</strong> / 5</p>
+            }
+
+            <p class="mt-4">@Model.Product.Description</p>
 
             <form asp-controller="Cart" asp-action="Add" method="post" class="mt-4">
-                <input type="hidden" name="productId" value="@Model.Id" />
+                <input type="hidden" name="productId" value="@Model.Product.Id" />
                 <div class="d-flex align-items-center mb-3">
                     <label for="quantity" class="me-2">Quantity:</label>
                     <input type="number" id="quantity" name="quantity" value="1" min="1" class="form-control" style="width: 80px;" />
@@ -27,5 +32,80 @@
 
             <a asp-controller="Products" asp-action="All" class="btn btn-outline-secondary mt-3 w-100">← Back to Products</a>
         </div>
+    </div>
+
+    <!-- Reviews -->
+    <div class="mt-5">
+        <h4 class="mb-4">💬 Customer Reviews</h4>
+
+        @if (!Model.Reviews.Any())
+        {
+            <p class="text-muted">No reviews yet. Be the first to leave one!</p>
+        }
+        else
+        {
+            foreach (var review in Model.Reviews)
+            {
+                <div class="border rounded p-3 mb-3 bg-dark text-white">
+                    <span class="text-warning">⭐ @review.Rating</span>
+                    <p class="mb-1">@review.Comment</p>
+                    <small class="text-muted">@review.CreatedAt.ToShortDateString()</small>
+                </div>
+            }
+        }
+
+        @if (User.Identity?.IsAuthenticated == true)
+        {
+            <form asp-controller="Reviews" asp-action="Create" method="post" class="mt-4">
+                <input type="hidden" name="ProductId" value="@Model.Product.Id" />
+
+                <style>
+                    .star-rating {
+                        direction: rtl;
+                        font-size: 2rem;
+                        display: inline-flex;
+                    }
+
+                        .star-rating input[type="radio"] {
+                            display: none;
+                        }
+
+                        .star-rating label {
+                            color: #ccc;
+                            cursor: pointer;
+                            transition: color 0.2s;
+                        }
+
+                            .star-rating input:checked ~ label,
+                            .star-rating label:hover,
+                            .star-rating label:hover ~ label {
+                                color: gold;
+                            }
+                </style>
+
+                <div class="mb-3">
+                    <label class="form-label">Rating</label>
+                    <div class="star-rating">
+                        @for (int i = 5; i >= 1; i--)
+                        {
+                            <input type="radio" id="star@i" name="Rating" value="@i" />
+                            <label for="star@i" title="@i stars">&#9733;</label>
+                        }
+                    </div>
+                </div>
+
+
+                <div class="mb-3">
+                    <label for="Comment" class="form-label">Comment</label>
+                    <textarea name="Comment" class="form-control" rows="3" required></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-success">Submit Review</button>
+            </form>
+        }
+        else
+        {
+            <p class="text-muted mt-4">🔒 You must be logged in to leave a review.</p>
+        }
     </div>
 </div>

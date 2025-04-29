@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using NutritionStore.Models; 
+using NutritionStore.Models;
 
 public class ApplicationDbContext : IdentityDbContext
 {
@@ -15,4 +15,6 @@ public class ApplicationDbContext : IdentityDbContext
     public DbSet<CartItem> CartItems { get; set; } = null!;
     public DbSet<Order> Orders { get; set; } = null!;
     public DbSet<OrderItem> OrderItems { get; set; } = null!;
+
+    public DbSet<Review> Review { get; set; } = null!;
 }
