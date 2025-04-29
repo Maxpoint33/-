@@ -23,7 +23,7 @@ public class CartController : Controller
             .Where(c => c.UserId == userId)
             .ToListAsync();
 
-        var products = await _context.Products.Include(p => p.Category).ToListAsync();
+        var products = await _context.Products.ToListAsync();
         ViewBag.Products = products;
 
         return View(cartItems);
@@ -57,6 +57,11 @@ public class CartController : Controller
 
         await _context.SaveChangesAsync();
 
+        // Update session cart count
+        var cartCount = await _context.CartItems.Where(c => c.UserId == userId).SumAsync(c => c.Quantity);
+        HttpContext.Session.SetInt32("CartCount", cartCount);
+
+        TempData["Success"] = "Item added to cart!";
         return RedirectToAction("Index");
     }
 
@@ -75,5 +80,46 @@ public class CartController : Controller
         await _context.SaveChangesAsync();
 
         return RedirectToAction("Index");
+    }
+
+    // ➕➖ Update Quantity
+    [HttpPost]
+    public async Task<IActionResult> UpdateQuantity(int id, string actionType)
+    {
+        var cartItem = await _context.CartItems.FindAsync(id);
+        if (cartItem == null)
+        {
+            return NotFound();
+        }
+
+        if (actionType == "increase")
+            cartItem.Quantity++;
+        else if (actionType == "decrease" && cartItem.Quantity > 1)
+            cartItem.Quantity--;
+
+        await _context.SaveChangesAsync();
+        return RedirectToAction("Index");
+    }
+
+    // ✅ Fake Checkout
+    [HttpPost]
+    public async Task<IActionResult> Checkout()
+    {
+        var userId = User.Identity.Name;
+        var cartItems = _context.CartItems.Where(c => c.UserId == userId);
+
+        _context.CartItems.RemoveRange(cartItems);
+        await _context.SaveChangesAsync();
+
+        HttpContext.Session.SetInt32("CartCount", 0);
+
+        TempData["Success"] = "🎉 Order completed!";
+        return RedirectToAction("OrderCompleted");
+    }
+
+    [HttpGet]
+    public IActionResult OrderCompleted()
+    {
+        return View();
     }
 }

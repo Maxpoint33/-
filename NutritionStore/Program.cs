@@ -25,6 +25,9 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options =>
 .AddRoles<IdentityRole>() // 💥 Role support
 .AddEntityFrameworkStores<ApplicationDbContext>();
 
+// ✅ Add Session Service
+builder.Services.AddSession();
+
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages(); // Required for Identity UI pages
 
@@ -46,6 +49,9 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+// ✅ Add Session Middleware
+app.UseSession();
+
 app.UseAuthentication();
 app.UseAuthorization();
 
@@ -56,7 +62,7 @@ app.MapControllerRoute(
 
 app.MapRazorPages();
 
-// 💾 Seed the DB (roles, admin, categories, product)
+// 💾 Seed the DB (roles, admin, categories, products)
 await DbInitializer.SeedAsync(app.Services);
 
 app.Run();
