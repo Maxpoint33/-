@@ -1,0 +1,43 @@
+﻿@model IEnumerable<NutritionStore.Models.ProductReview>
+@{
+    ViewData["Title"] = "Manage Reviews";
+}
+
+<h2 class="mb-4">🗂 Manage Product Reviews</h2>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success text-center">
+        @TempData["SuccessMessage"]
+    </div>
+}
+
+<table class="table table-dark table-striped">
+    <thead>
+        <tr>
+            <th>Product</th>
+            <th>User</th>
+            <th>Rating</th>
+            <th>Comment</th>
+            <th>Posted</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var review in Model)
+        {
+            <tr>
+                <td>@review.Product.Name</td>
+                <td>@review.UserId</td>
+                <td>@review.Rating</td>
+                <td>@review.Comment</td>
+                <td>@review.PostedOn.ToShortDateString()</td>
+                <td>
+                    <form asp-action="Delete" method="post" asp-route-id="@review.Id" onsubmit="return confirm('Are you sure?');">
+                        <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
