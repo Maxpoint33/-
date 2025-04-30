@@ -49,7 +49,7 @@
                 <div class="border rounded p-3 mb-3 bg-dark text-white">
                     <span class="text-warning">⭐ @review.Rating</span>
                     <p class="mb-1">@review.Comment</p>
-                    <small class="text-muted">@review.CreatedAt.ToShortDateString()</small>
+                    <small class="text-muted">@review.PostedOn.ToShortDateString()</small>
                 </div>
             }
         }
@@ -59,41 +59,16 @@
             <form asp-controller="Reviews" asp-action="Create" method="post" class="mt-4">
                 <input type="hidden" name="ProductId" value="@Model.Product.Id" />
 
-                <style>
-                    .star-rating {
-                        direction: rtl;
-                        font-size: 2rem;
-                        display: inline-flex;
-                    }
-
-                        .star-rating input[type="radio"] {
-                            display: none;
-                        }
-
-                        .star-rating label {
-                            color: #ccc;
-                            cursor: pointer;
-                            transition: color 0.2s;
-                        }
-
-                            .star-rating input:checked ~ label,
-                            .star-rating label:hover,
-                            .star-rating label:hover ~ label {
-                                color: gold;
-                            }
-                </style>
-
                 <div class="mb-3">
                     <label class="form-label">Rating</label>
-                    <div class="star-rating">
-                        @for (int i = 5; i >= 1; i--)
+                    <div class="d-flex gap-1 fs-4 text-warning star-rating" id="star-rating">
+                        @for (int i = 1; i <= 5; i++)
                         {
-                            <input type="radio" id="star@i" name="Rating" value="@i" />
-                            <label for="star@i" title="@i stars">&#9733;</label>
+                            <i class="bi bi-star" data-value="@i" style="cursor:pointer;"></i>
                         }
                     </div>
+                    <input type="hidden" name="Rating" id="Rating" value="5" />
                 </div>
-
 
                 <div class="mb-3">
                     <label for="Comment" class="form-label">Comment</label>
@@ -102,6 +77,30 @@
 
                 <button type="submit" class="btn btn-success">Submit Review</button>
             </form>
+
+            @section Scripts {
+            <script>
+                const stars = document.querySelectorAll("#star-rating i");
+                const ratingInput = document.getElementById("Rating");
+
+                stars.forEach((star) => {
+                    star.addEventListener("click", () => {
+                        const value = parseInt(star.getAttribute("data-value"));
+                        ratingInput.value = value;
+
+                        stars.forEach(s => {
+                            s.classList.remove("bi-star-fill");
+                            s.classList.add("bi-star");
+                        });
+
+                        for (let i = 0; i < value; i++) {
+                            stars[i].classList.remove("bi-star");
+                            stars[i].classList.add("bi-star-fill");
+                        }
+                    });
+                });
+            </script>
+        }
         }
         else
         {

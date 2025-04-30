@@ -57,7 +57,6 @@ public class ProductsController : Controller
         return View(products);
     }
 
-    // ➕ Add to Cart
     [HttpPost]
     [Authorize]
     public async Task<IActionResult> AddToCart(int productId)
@@ -90,16 +89,20 @@ public class ProductsController : Controller
         return RedirectToAction(nameof(All));
     }
 
-    // 🔎 Product Details
+
     [AllowAnonymous]
     public async Task<IActionResult> Details(int id)
     {
-        var product = await _context.Products.Include(p => p.Category).FirstOrDefaultAsync(p => p.Id == id);
-        if (product == null) return NotFound();
+        var product = await _context.Products
+            .Include(p => p.Category)
+            .FirstOrDefaultAsync(p => p.Id == id);
 
-        var reviews = await _context.Reviews
+        if (product == null)
+            return NotFound();
+
+        var reviews = await _context.ProductReviews
             .Where(r => r.ProductId == id)
-            .OrderByDescending(r => r.CreatedAt)
+            .OrderByDescending(r => r.PostedOn)
             .ToListAsync();
 
         var avgRating = reviews.Any() ? reviews.Average(r => r.Rating) : 0;
@@ -115,7 +118,8 @@ public class ProductsController : Controller
         return View(viewModel);
     }
 
-    // ✏️ Create Product (Admin Only)
+
+
     [Authorize(Roles = "Admin")]
     [HttpGet]
     public async Task<IActionResult> Create()
@@ -149,7 +153,6 @@ public class ProductsController : Controller
         return RedirectToAction(nameof(All));
     }
 
-    // ✏️ Edit Product (Admin Only)
     [Authorize(Roles = "Admin")]
     [HttpGet]
     public async Task<IActionResult> Edit(int id)
@@ -198,7 +201,6 @@ public class ProductsController : Controller
         return RedirectToAction(nameof(All));
     }
 
-    // ❌ Delete Product (Admin Only)
     [Authorize(Roles = "Admin")]
     [HttpPost]
     public async Task<IActionResult> Delete(int id)

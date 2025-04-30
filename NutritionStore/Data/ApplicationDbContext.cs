@@ -16,5 +16,6 @@ public class ApplicationDbContext : IdentityDbContext
     public DbSet<Order> Orders { get; set; } = null!;
     public DbSet<OrderItem> OrderItems { get; set; } = null!;
 
-    public DbSet<Review> Review { get; set; } = null!;
+    public DbSet<ProductReview> ProductReviews { get; set; } = null!;
+
 }

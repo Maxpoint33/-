@@ -5,8 +5,8 @@ namespace NutritionStore.ViewModels
     public class ProductDetailsViewModel
     {
         public Product Product { get; set; } = null!;
-        public IEnumerable<Review> Reviews { get; set; } = new List<Review>();
+        public IEnumerable<ProductReview> Reviews { get; set; } = new List<ProductReview>();
         public double AverageRating { get; set; }
-        public ReviewFormModel ReviewForm { get; set; } = new ReviewFormModel();
+        public ReviewFormModel ReviewForm { get; set; } = new();
     }
 }

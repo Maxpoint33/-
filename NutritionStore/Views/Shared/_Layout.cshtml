@@ -73,7 +73,7 @@
         <!-- ✅ Success Message -->
         @if (TempData["Success"] != null)
         {
-            <div class="alert alert-success text-center animate__animated animate__fadeInDown">
+            <div class="alert alert-success text-center animate__animated animate__fadeInDown" id="success-alert">
                 @TempData["Success"]
             </div>
         }
@@ -93,6 +93,19 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <script>
+        // ✅ Auto-dismiss alert after 3 seconds
+        setTimeout(function () {
+            var alert = document.getElementById("success-alert");
+            if (alert) {
+                alert.style.transition = "opacity 0.5s ease";
+                alert.style.opacity = 0;
+                setTimeout(() => alert.remove(), 500);
+            }
+        }, 3000);
+    </script>
+
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

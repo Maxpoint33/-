@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using NutritionStore.Data;
-using NutritionStore.Models;
 
 [Authorize]
 public class ReviewsController : Controller
@@ -15,31 +13,33 @@ public class ReviewsController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create(ReviewFormModel model)
+    public async Task<IActionResult> Create(int productId, int rating, string comment)
     {
         var userId = User.Identity?.Name;
         if (userId == null) return Unauthorized();
 
-        var exists = await _context.Reviews.AnyAsync(r => r.ProductId == model.ProductId && r.UserId == userId);
-        if (exists)
+        var alreadyReviewed = await _context.ProductReviews
+            .AnyAsync(r => r.ProductId == productId && r.UserId == userId);
+
+        if (alreadyReviewed)
         {
-            TempData["ErrorMessage"] = "You have already reviewed this product.";
-            return RedirectToAction("Details", "Products", new { id = model.ProductId });
+            TempData["ErrorMessage"] = "⚠️ You already reviewed this product.";
+            return RedirectToAction("Details", "Products", new { id = productId });
         }
 
-        var review = new Review
+        var review = new ProductReview
         {
-            ProductId = model.ProductId,
-            Rating = model.Rating,
-            Comment = model.Comment,
+            ProductId = productId,
             UserId = userId,
-            CreatedAt = DateTime.Now
+            Rating = rating,
+            Comment = comment,
+            PostedOn = DateTime.Now
         };
 
-        _context.Reviews.Add(review);
+        _context.ProductReviews.Add(review);
         await _context.SaveChangesAsync();
 
         TempData["SuccessMessage"] = "✅ Review submitted!";
-        return RedirectToAction("Details", "Products", new { id = model.ProductId });
+        return RedirectToAction("Details", "Products", new { id = productId });
     }
 }
